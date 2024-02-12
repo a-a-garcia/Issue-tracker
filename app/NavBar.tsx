@@ -1,8 +1,13 @@
+'use client'
 import React from 'react'
 import Link from 'next/link'
 import { AiFillBug } from "react-icons/ai"
+import classnames from 'classnames'
+import { usePathname } from 'next/navigation'
 
 const NavBar = () => {
+  const currentPath = usePathname()
+
   const navLinks = [
     {
       name: "Dashboard",
@@ -19,7 +24,16 @@ const NavBar = () => {
       <ul className="flex space-x-6 h-16 border-b items-center px-5 mb-5">
         <li><AiFillBug /></li>
         {navLinks.map((link) => {
-          return <Link href={link.href}><li className='text-slate-400 hover:text-black transition-colors'>{link.name}</li></Link>
+          return <Link
+            key={link.href} 
+            href={link.href}
+            className={classnames({
+                'text-zinc-900' : link.href === currentPath,
+                'text-zinc-300' : link.href !== currentPath,
+                'hover:text-zinc-800 transition-colors' : true
+              })
+            }>{link.name}
+            </Link>
         })}
       </ul>
     </nav>

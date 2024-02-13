@@ -1,0 +1,5 @@
+/* this file was created specifically to override Radix UI's default font application (apple). This makes inter the default font */
+
+.radix-themes {
+  --default-font-family: var(--font-inter);
+}

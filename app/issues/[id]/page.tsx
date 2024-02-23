@@ -5,6 +5,7 @@ import { Card, Heading, Text } from "@radix-ui/themes";
 import IssueStatusBadge from "@/app/components/IssueStatusBadge";
 import { Flex } from "@radix-ui/themes";
 import ReactMarkdown from "react-markdown";
+import delay from "delay";
 
 // this is of type string because data coming from the URL is always a string, we must parse it into a number
 interface Props {
@@ -12,6 +13,9 @@ interface Props {
 }
 
 const IssueDetailPage = async ({ params }: Props) => {
+
+    await delay(2000)
+
   //findUnique takes in an object with a property `where` set to an object with one property `id` with value of params.id parsed into a number
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(params.id) },

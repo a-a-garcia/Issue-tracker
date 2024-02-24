@@ -10,15 +10,12 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
-import ErrorMessage from "@/app/components/ErrorMessage";
-import Spinner from "@/app/components/Spinner";
-import delay from "delay";
+import { ErrorMessage, Spinner } from "@/app/components/index"
 
 //telling zod to infer what the type of issueForm is. this is to remove redundancy of having to change the interface here and in the schema should the form change
 type IssueForm = z.infer<typeof createIssueSchema>;
 
-const NewIssuePage = async () => {
-  await delay(2000);
+const NewIssuePage = () => {
   //useForm returns an object, destructure to get props you need
   //register allows input field tracking with react-hook-form
   // formState object allows you to access everything you need from the forms' properties

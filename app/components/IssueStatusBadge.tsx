@@ -8,6 +8,7 @@ import { Badge } from "@radix-ui/themes";
 // }
 
 // the single `|` in this case means the same as `||`
+// cannot be `color: string` because it does not like the possibility of color being a random string.
 const statusMap: Record<
   Status,
   { label: string; color: "red" | "violet" | "green" }

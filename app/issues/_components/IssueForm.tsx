@@ -18,6 +18,12 @@ type IssueFormData = z.infer<typeof issueSchema>;
 
 // `?` after issue means that it's an optional prop. It won't exist for the edit page
 const IssueForm = ({ issue }: { issue?: Issue }) => {
+  // ensures that the simpleMDE editor is only loaded on the client side to avoid `navigator is not defined` error
+  // UPDATE: no longer rendering this dynamically to smoothen loading experience
+  // const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  //   ssr: false,
+  // });
+
   //useForm returns an object, destructure to get props you need
   //register allows input field tracking with react-hook-form
   // formState object allows you to access everything you need from the forms' properties
@@ -42,6 +48,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         await axios.post("/api/issues", data);
       }
       router.push("/issues");
+      router.refresh();
     } catch (error) {
       setIsSubmitting(false);
       setError("An unexpected error occurred.");

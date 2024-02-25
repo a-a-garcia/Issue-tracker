@@ -1,9 +1,9 @@
 import prisma from "@/prisma/client";
-import { Box, Grid } from "@radix-ui/themes";
+import { Box, Flex, Grid } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
 import EditIssueButton from "./EditIssueButton";
 import IssueDetails from "./IssueDetails";
-
+import DeleteIssueButton from "./DeleteIssueButton";
 
 // this is of type string because data coming from the URL is always a string, we must parse it into a number
 interface Props {
@@ -23,16 +23,18 @@ const IssueDetailPage = async ({ params }: Props) => {
   }
 
   return (
-    <Grid columns={{initial: "1", md: "2"}} gap="5">
-      <Box>
+    <Grid columns={{ initial: "1", sm: "5" }} gap="5">
+      <Box className="md:col-span-4">
         <IssueDetails issue={issue}></IssueDetails>
       </Box>
       <Box>
-        <EditIssueButton issueId={issue.id}></EditIssueButton>
+        <Flex direction={"column"} gap="4">
+          <EditIssueButton issueId={issue.id}></EditIssueButton>
+          <DeleteIssueButton issueId={issue.id}></DeleteIssueButton>
+        </Flex>
       </Box>
     </Grid>
   );
 };
-
 
 export default IssueDetailPage;

@@ -4,15 +4,18 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/app/components";
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
   const router = useRouter();
   const [error, setError] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const deleteIssue = async () => {
     try {
+      setIsDeleting(true);
       await axios.delete(`/api/issues/${issueId}`);
-      router.push("/issues");
+      router.push("/issues/list");
       router.refresh();
     } catch (error) {
       setError(true);
@@ -23,7 +26,11 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button color="red">
+          <Button
+            color="red"
+            //diabled prop used here instead of logic to change the color
+            disabled={isDeleting}
+          >
             <svg
               width="15"
               height="15"
@@ -40,6 +47,7 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
             </svg>
             {/* <Link href={`/issues/${issueId}/delete`}>Delete Isssue</Link> */}
             Delete Issue
+            {isDeleting && <Spinner />}
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content className="AlertDialogContent">

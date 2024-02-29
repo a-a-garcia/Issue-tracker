@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import EditIssueButton from "./EditIssueButton";
 import IssueDetails from "./IssueDetails";
 import DeleteIssueButton from "./DeleteIssueButton";
+import { getServerSession } from "next-auth"
 
 // this is of type string because data coming from the URL is always a string, we must parse it into a number
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
 
 // destructure params property from Props
 const IssueDetailPage = async ({ params }: Props) => {
+  const session = await getServerSession();
+
   //findUnique takes in an object with a property `where` set to an object with one property `id` with value of params.id parsed into a number
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(params.id) },
@@ -28,10 +31,12 @@ const IssueDetailPage = async ({ params }: Props) => {
         <IssueDetails issue={issue}></IssueDetails>
       </Box>
       <Box>
+        {session &&
         <Flex direction={"column"} gap="4">
           <EditIssueButton issueId={issue.id}></EditIssueButton>
           <DeleteIssueButton issueId={issue.id}></DeleteIssueButton>
         </Flex>
+        }
       </Box>
     </Grid>
   );

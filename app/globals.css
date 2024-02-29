@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* define a layer for creating a bunch of utility classes. select utilities layer. we create a class called .nav-links and then apply a bunch of tailwind classes*/
+@layer utilities {
+  .nav-link {
+    @apply text-zinc-300 hover:text-zinc-800 transition-colors
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

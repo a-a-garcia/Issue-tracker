@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NavBar from "./NavBar";
 import AuthProvider from "./auth/Provider";
+import QueryProviderClient from "./api/QueryProviderClient";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,15 +26,17 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <AuthProvider>
-          <Theme accentColor="violet">
-            <NavBar />
-            <main className="p-5">
-              {/* Container is a radix ui component that applies a max width to the page and also centers all components */}
-              <Container>{children}</Container>
-            </main>
-          </Theme>
-        </AuthProvider>
+        <QueryProviderClient>
+          <AuthProvider>
+            <Theme accentColor="violet">
+              <NavBar />
+              <main className="p-5">
+                {/* Container is a radix ui component that applies a max width to the page and also centers all components */}
+                <Container>{children}</Container>
+              </main>
+            </Theme>
+          </AuthProvider>
+        </QueryProviderClient>
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import EditIssueButton from "./EditIssueButton";
 import IssueDetails from "./IssueDetails";
 import DeleteIssueButton from "./DeleteIssueButton";
 import { getServerSession } from "next-auth"
+import AsigneeSelect from "./AsigneeSelect";
 
 // this is of type string because data coming from the URL is always a string, we must parse it into a number
 interface Props {
@@ -33,6 +34,7 @@ const IssueDetailPage = async ({ params }: Props) => {
       <Box>
         {session &&
         <Flex direction={"column"} gap="4">
+          <AsigneeSelect />
           <EditIssueButton issueId={issue.id}></EditIssueButton>
           <DeleteIssueButton issueId={issue.id}></DeleteIssueButton>
         </Flex>

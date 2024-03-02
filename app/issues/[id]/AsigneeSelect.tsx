@@ -5,8 +5,9 @@ import { Issue, User } from "@prisma/client";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton from "@/app/components/Skeleton";
+import toast, { Toaster } from "react-hot-toast";
 
-const AsigneeSelect = ( {issue} : { issue: Issue }) => {
+const AsigneeSelect = ({ issue }: { issue: Issue }) => {
   //   destructure the result to grab 3 properties
   //   data - renamed as users, error & isLoading
   const { data: users, error, isLoading } =
@@ -47,28 +48,38 @@ const AsigneeSelect = ( {issue} : { issue: Issue }) => {
   //   }, []);
 
   return (
-    <Select.Root onValueChange={(userId) => {
-      axios.patch(`/api/issues/${issue.id}`, { assignedToUserId : userId === "Unassigned" ? null : userId })
-    }}>
-      <Select.Trigger placeholder="Assign..." 
-      />
-      <Select.Content>
-        <Select.Group>
-          <Select.Label>Suggestions</Select.Label>
+    <>
+      <Toaster />
+      <Select.Root
+        onValueChange={async (userId) => {
+          await axios
+            .patch(`/xapi/issues/${issue.id}`, {
+              assignedToUserId: userId === "Unassigned" ? null : userId,
+            })
+            .catch(() => {
+              toast.error("Failed to assign issue.");
+            });
+        }}
+      >
+        <Select.Trigger placeholder="Assign..." />
+        <Select.Content>
           <Select.Group>
-            <Select.Item value="Unassigned">Unassigned</Select.Item>
-            {/* using optional chaining to solve the issue of users initially being empty*/}
-            {users?.map((user) => {
-              return (
-                <Select.Item value={user.id} key={user.id}>
-                  {user.name}
-                </Select.Item>
-              );
-            })}
+            <Select.Label>Suggestions</Select.Label>
+            <Select.Group>
+              <Select.Item value="Unassigned">Unassigned</Select.Item>
+              {/* using optional chaining to solve the issue of users initially being empty*/}
+              {users?.map((user) => {
+                return (
+                  <Select.Item value={user.id} key={user.id}>
+                    {user.name}
+                  </Select.Item>
+                );
+              })}
+            </Select.Group>
           </Select.Group>
-        </Select.Group>
-      </Select.Content>
-    </Select.Root>
+        </Select.Content>
+      </Select.Root>
+    </>
   );
 };
 

@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import { Select } from "@radix-ui/themes";
-import { User } from "@prisma/client";
+import { Issue, User } from "@prisma/client";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton from "@/app/components/Skeleton";
 
-const AsigneeSelect = () => {
+const AsigneeSelect = ( {issue} : { issue: Issue }) => {
   //   destructure the result to grab 3 properties
   //   data - renamed as users, error & isLoading
   const { data: users, error, isLoading } =
@@ -47,19 +47,25 @@ const AsigneeSelect = () => {
   //   }, []);
 
   return (
-    <Select.Root>
-      <Select.Trigger placeholder="Assign..." />
+    <Select.Root onValueChange={(userId) => {
+      axios.patch(`/api/issues/${issue.id}`, { assignedToUserId : userId === "Unassigned" ? null : userId })
+    }}>
+      <Select.Trigger placeholder="Assign..." 
+      />
       <Select.Content>
         <Select.Group>
           <Select.Label>Suggestions</Select.Label>
-          {/* using optional chaining to solve the issue of users initially being empty*/}
-          {users?.map((user) => {
-            return (
-              <Select.Item value={user.id} key={user.id}>
-                {user.name}
-              </Select.Item>
-            );
-          })}
+          <Select.Group>
+            <Select.Item value="Unassigned">Unassigned</Select.Item>
+            {/* using optional chaining to solve the issue of users initially being empty*/}
+            {users?.map((user) => {
+              return (
+                <Select.Item value={user.id} key={user.id}>
+                  {user.name}
+                </Select.Item>
+              );
+            })}
+          </Select.Group>
         </Select.Group>
       </Select.Content>
     </Select.Root>

@@ -16,7 +16,7 @@ interface Props {
 
 const IssuesPage = async ({ searchParams } : Props) => {
 
-// refactor columns to created via map 
+// refactor columns to created via map - `{}[]` is TS type syntax for "array of objects"
   const columns: { 
     label: string; 
     value: keyof Issue;
@@ -35,11 +35,27 @@ const IssuesPage = async ({ searchParams } : Props) => {
   const statuses = Object.values(Status)
   // check to see if searchParams.status matches any of the valid statuses else return undefined (prisma will do nothing with undefined)
   const validStatus = statuses.includes(searchParams.status) ? searchParams.status : undefined
+  
+  // must validate the orderBy object, or else you'll get an error if there are no orderBy search params
+  // must also validate in case users try to enter invalid search param IE ?orderBy=titleX
+  // we can't do .includes on columns because it expects a column object (columns is an array of strings..).
+  // map over array of objects..
+  const orderBy = columns.map(
+    // if that column's .value matches searchParams.orderBy value...
+    (column) => column.value)
+    .includes(searchParams.orderBy) 
+    // we pass it to prisma, dynamically depending on what the orderBy is
+    ? { [searchParams.orderBy] : 'asc' } 
+    // else undefined, prisma does nothing with undefined
+    : undefined
+
 
   const issues = await prisma.issue.findMany({ 
     where: {
       status: validStatus
-    }
+    },
+    // this is where we can sort data - add one or many properties
+    orderBy 
   });
 
   return (

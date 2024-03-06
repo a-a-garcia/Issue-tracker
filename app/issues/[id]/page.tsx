@@ -6,20 +6,23 @@ import IssueDetails from "./IssueDetails";
 import DeleteIssueButton from "./DeleteIssueButton";
 import { getServerSession } from "next-auth"
 import AsigneeSelect from "./AsigneeSelect";
+import {cache} from 'react'
 
 // this is of type string because data coming from the URL is always a string, we must parse it into a number
 interface Props {
   params: { id: string };
 }
 
+// using react cache to combine queries for metadata and fetching issue
+// we don't need to async await here because we are returning the promise straight away (if we had more code in this block, we should async/await)
+const fetchUser = cache((issueId: number) =>  prisma.issue.findUnique({where: { id: issueId}}))
+
 // destructure params property from Props
 const IssueDetailPage = async ({ params }: Props) => {
   const session = await getServerSession();
 
   //findUnique takes in an object with a property `where` set to an object with one property `id` with value of params.id parsed into a number
-  const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(params.id) },
-  });
+  const issue = await fetchUser(parseInt(params.id))
 
   //notFound is built into next.js and will redirect to 404 page without having to useRouter
   if (!issue) {
@@ -48,9 +51,7 @@ export default IssueDetailPage;
 
 // we want to generate the metadata dynamically depending on what issue we are on
 export async function generateMetadata( {params} : Props ) {
-  const issue = await prisma.issue.findUnique({
-    where : { id: parseInt(params.id)}
-  })
+  const issue = await fetchUser(parseInt(params.id))
 
   return {
     title: issue?.title,

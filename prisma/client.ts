@@ -1,7 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+  return new PrismaClient(
+    // you can pass an object with a log property set to ['query'] to log all prisma queries on a page. remember to reset the dev server as prisma only get instantiated once on start
+    // {
+    //   log: ['query']
+    // }
+  )
 }
 
 declare global {
